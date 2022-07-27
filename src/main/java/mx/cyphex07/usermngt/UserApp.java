@@ -8,17 +8,17 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories("mx.hexsilvar.skeleton")
-@EntityScan("mx.hexsilvar.skeleton.model")
-public class SpringBootSkeletonApplication {
+@EnableJpaRepositories("mx.cyphex07.usermngt")
+@EntityScan("mx.cyphex07.usermngt.model")
+public class UserApp {
 
-  private static final Class<?>[] CONFIGS = {
-      SpringBootSkeletonApplication.class,
-      SecurityConfig.class
-  };
+	private static final Class<?>[] CONFIGS = {
+			UserApp.class,
+			SecurityConfig.class
+	};
 
-  public static void main(String[] args) {
-    SpringApplication.run(CONFIGS, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(CONFIGS, args);
+	}
 
 }
