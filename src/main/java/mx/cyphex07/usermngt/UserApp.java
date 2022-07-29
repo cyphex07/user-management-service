@@ -1,5 +1,6 @@
 package mx.cyphex07.usermngt;
 
+import mx.cyphex07.usermngt.config.NotificationConfig;
 import mx.cyphex07.usermngt.config.SecurityConfig;
 
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ public class UserApp {
 
 	private static final Class<?>[] CONFIGS = {
 			UserApp.class,
+			NotificationConfig.class,
 			SecurityConfig.class
 	};
 
