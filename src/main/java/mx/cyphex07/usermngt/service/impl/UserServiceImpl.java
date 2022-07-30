@@ -8,6 +8,7 @@ import mx.cyphex07.usermngt.publish.event.OnRegistrationCompleteEvent;
 import mx.cyphex07.usermngt.repository.UserRepository;
 import mx.cyphex07.usermngt.repository.VerificationTokenRepository;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +20,15 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final ApplicationEventPublisher eventPublisher;
 
+  @Value("${userapp.server.url.app}")
+  private String serverUrl;
+
   @Override
   public User signUp(User user) {
     userRepository.findByEmail(user.getEmail())
         .ifPresent(this::userAlreadyExist);
     user = userRepository.save(user);
-    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
+    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, serverUrl));
     return user;
   }
 

@@ -10,8 +10,12 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
   @Getter
   private final User user;
 
-  public OnRegistrationCompleteEvent(final User user) {
+  @Getter
+  private final String url;
+
+  public OnRegistrationCompleteEvent(final User user, String url) {
     super(user);
     this.user = user;
+    this.url = url;
   }
 }

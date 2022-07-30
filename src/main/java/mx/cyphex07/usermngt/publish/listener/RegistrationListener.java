@@ -24,20 +24,26 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
   private final UserService userService;
   private final NotificationService notificationService;
 
-  @Value("userapp.notification.email.subject")
+  @Value("${userapp.notification.email.subject}")
   private String subject;
 
-  @Value("userapp.notification.email.message")
+  @Value("${userapp.notification.email.message}")
   private String message;
+
+  @Value("${userapp.notification.email.sender}")
+  private String sender;
 
   @Override
   public void onApplicationEvent(final OnRegistrationCompleteEvent event) {
+    log.info("Executing application event: OnRegistrationCompleteEvent");
+
     User user = event.getUser();
-    log.info("Sending email to the user {}", user.getEmail());
+    String serverUrl = event.getUrl();
+
     Notification notification = Notification.builder()
-        .isRawHTML(false)
+        .sender(sender)
         .subject(subject)
-        .message(String.format(message, user.getEmail(), user.getEmail()))
+        .message(String.format(message, user.getEmail(), serverUrl))
         .recipients(List.of(user.getEmail()))
         .build();
 
