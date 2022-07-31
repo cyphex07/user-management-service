@@ -14,7 +14,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 @RequiredArgsConstructor
 public class GmailNotificationService implements NotificationService {
 
-
   private final JavaMailSender mailSender;
 
   @Override
