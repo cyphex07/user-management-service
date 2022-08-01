@@ -17,8 +17,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Configuration
 public class NotificationConfig {
 
-  @Value("${userapp.notification.provider}")
-  private NotificationProvider notificationProvider;
+  @Value("${NOTIFICATION_PROVIDER:EMPTY}")
+  private String notificationProvider;
 
   @Autowired
   private JavaMailSender javaMailSender;
@@ -28,10 +28,10 @@ public class NotificationConfig {
 
   @Bean
   public NotificationService notificationService() {
-    return switch (notificationProvider) {
+    return switch (NotificationProvider.valueOf(notificationProvider)) {
       case GMAIL ->new GmailNotificationService(javaMailSender);
       case AWS_SES -> new SESNotificationService(sesV2Client());
-      default -> new DummyNotificationService();
+      case EMPTY -> new DummyNotificationService();
     };
   }
 

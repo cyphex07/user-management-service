@@ -10,5 +10,6 @@ public class DummyNotificationService implements NotificationService {
   @Override
   public void sendNotification(final Notification notification) {
     log.info("Sending dummy notification ....");
+    log.info(notification.toString());
   }
 }

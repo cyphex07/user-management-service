@@ -2,6 +2,7 @@ package mx.cyphex07.usermngt.handler;
 
 import mx.cyphex07.usermngt.exception.ApiError;
 import mx.cyphex07.usermngt.exception.BadRequestException;
+import mx.cyphex07.usermngt.exception.InvalidTokenConfirmationException;
 import mx.cyphex07.usermngt.exception.ResourceNotFoundException;
 import mx.cyphex07.usermngt.exception.UserAlreadyExistException;
 
@@ -27,8 +28,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
   }
 
-  @ExceptionHandler(value = {UserAlreadyExistException.class})
+  @ExceptionHandler(value = UserAlreadyExistException.class)
   public ResponseEntity<ApiError> userAlreadyExistException(UserAlreadyExistException ex, WebRequest request) {
+    final ApiError apiError = message(HttpStatus.BAD_REQUEST, ex);
+    return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(value = InvalidTokenConfirmationException.class)
+  public ResponseEntity<ApiError> invalidTokenConfirmationException(InvalidTokenConfirmationException ex, WebRequest request){
     final ApiError apiError = message(HttpStatus.BAD_REQUEST, ex);
     return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
   }

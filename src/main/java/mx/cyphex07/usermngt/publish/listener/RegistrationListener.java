@@ -8,6 +8,7 @@ import mx.cyphex07.usermngt.publish.event.OnRegistrationCompleteEvent;
 import mx.cyphex07.usermngt.service.UserService;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +39,21 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     log.info("Executing application event: OnRegistrationCompleteEvent");
 
     User user = event.getUser();
-    String serverUrl = event.getUrl();
+
+    // token
+    final String token = UUID.randomUUID().toString();
+    userService.saveSignUpToken(user, token);
+    StringBuilder confirmationURL = new StringBuilder(event.getUrl())
+        .append("/")
+        .append("api/v1/signUp/confirmation")
+        .append("?")
+        .append("token=")
+        .append(token);
 
     Notification notification = Notification.builder()
         .sender(sender)
         .subject(subject)
-        .message(String.format(message, user.getEmail(), serverUrl))
+        .message(String.format(message, user.getEmail(), confirmationURL.toString()))
         .recipients(List.of(user.getEmail()))
         .build();
 
