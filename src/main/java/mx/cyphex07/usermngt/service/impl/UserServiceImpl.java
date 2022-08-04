@@ -1,8 +1,11 @@
 package mx.cyphex07.usermngt.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import mx.cyphex07.usermngt.api.RestPreconditions;
 import mx.cyphex07.usermngt.exception.InvalidTokenConfirmationException;
+import mx.cyphex07.usermngt.exception.ResourceNotFoundException;
 import mx.cyphex07.usermngt.model.VerificationToken;
+import mx.cyphex07.usermngt.repository.PasswordTokenRepository;
 import mx.cyphex07.usermngt.service.UserService;
 import mx.cyphex07.usermngt.exception.UserAlreadyExistException;
 import mx.cyphex07.usermngt.model.User;
@@ -24,6 +27,7 @@ public class UserServiceImpl implements UserService {
 
   private final VerificationTokenRepository tokenRepository;
   private final UserRepository userRepository;
+  private final PasswordTokenRepository passwordTokenRepository;
   private final ApplicationEventPublisher eventPublisher;
 
   @Value("${userapp.server.url.app}")
@@ -33,41 +37,16 @@ public class UserServiceImpl implements UserService {
   private int expirationInMinutes;
 
   @Override
-  public User signUp(User user) {
-
-    userRepository.findByEmail(user.getEmail())
-        .ifPresent(this::userAlreadyExist);
-
-    user = userRepository.save(user);
-    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, serverUrl));
-
-    return user;
-  }
-
-  @Override
   public void saveSignUpToken(final User user, final String token) {
     final VerificationToken myToken = new VerificationToken(token, user, expirationInMinutes);
     tokenRepository.save(myToken);
   }
 
   @Override
-  public void confirmSignUp(final String token) {
-    VerificationToken verificationToken = tokenRepository.findByToken(token)
-      .orElseThrow(this::invalidTokenConfirmationException);
+  public void resetPassword(final String email) {
+    RestPreconditions.checkFound(userRepository.findByEmail(email)
+        .isEmpty(), "Account not found.");
 
-    if (verificationToken.isExpired(expirationInMinutes))
-      throw new InvalidTokenConfirmationException("Invalid confirmation token");
-
-    User user = verificationToken.getUser();
-    user.setEnabled(true);
-    userRepository.save(user);
   }
 
-  private void userAlreadyExist(final User user) {
-    throw new UserAlreadyExistException(String.format("User %s already exists", user.getEmail()));
-  }
-
-  private InvalidTokenConfirmationException invalidTokenConfirmationException() {
-      throw new InvalidTokenConfirmationException("Invalid confirmation token");
-  }
 }

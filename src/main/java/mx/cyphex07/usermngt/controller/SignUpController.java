@@ -3,7 +3,7 @@ package mx.cyphex07.usermngt.controller;
 import lombok.RequiredArgsConstructor;
 import mx.cyphex07.usermngt.api.RestPreconditions;
 import mx.cyphex07.usermngt.model.User;
-import mx.cyphex07.usermngt.service.UserService;
+import mx.cyphex07.usermngt.service.SignUpService;
 
 import javax.validation.Valid;
 
@@ -21,18 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SignUpController {
 
-  private final UserService userService;
+  private final SignUpService signUpService;
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void signUp(@Valid @RequestBody User user) {
     RestPreconditions.checkNotNull(user, "User cannot be empty");
-    userService.signUp(user);
+    signUpService.signUp(user);
   }
 
   @GetMapping("/confirmation")
   @ResponseStatus(HttpStatus.OK)
   public void confirmation(@RequestParam("token") @Valid String token) {
-    userService.confirmSignUp(token);
+    signUpService.confirmSignUp(token);
   }
 }
