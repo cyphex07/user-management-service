@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mx.cyphex07.usermngt.api.RestPreconditions;
 import mx.cyphex07.usermngt.exception.InvalidTokenConfirmationException;
 import mx.cyphex07.usermngt.exception.ResourceNotFoundException;
+import mx.cyphex07.usermngt.model.PasswordToken;
 import mx.cyphex07.usermngt.model.VerificationToken;
 import mx.cyphex07.usermngt.repository.PasswordTokenRepository;
 import mx.cyphex07.usermngt.service.UserService;
@@ -43,10 +44,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void resetPassword(final String email) {
-    RestPreconditions.checkFound(userRepository.findByEmail(email)
-        .isEmpty(), "Account not found.");
+  public void savePasswordRecoveryToken(User user, String token) {
+    PasswordToken passwordToken = new PasswordToken(token, user, expirationInMinutes);
+    passwordTokenRepository.save(passwordToken);
+  }
 
+  @Override public Optional<User> findByEmail(final String email) {
+    return userRepository.findByEmail(email);
   }
 
 }

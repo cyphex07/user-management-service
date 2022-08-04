@@ -23,10 +23,10 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
   private final UserService userService;
   private final NotificationService notificationService;
 
-  @Value("${userapp.notification.email.recovery.subject}")
+  @Value("${userapp.notification.email.subject}")
   private String subject;
 
-  @Value("${userapp.notification.email.recovery.message}")
+  @Value("${userapp.notification.email.message}")
   private String message;
 
   @Value("${userapp.notification.email.sender}")
@@ -46,7 +46,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     userService.saveSignUpToken(user, token);
     StringBuilder confirmationURL = new StringBuilder(serverUrl)
         .append("/")
-        .append("api/v1/account/tokenValidation")
+        .append("api/v1/signUp/confirm")
         .append("?")
         .append("token=")
         .append(token);

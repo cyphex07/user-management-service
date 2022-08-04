@@ -25,7 +25,7 @@ public class AccountController {
 
   @PostMapping("recovery")
   @ResponseStatus(HttpStatus.OK)
-  public void resetPassword(@Valid @RequestParam("email") String email) {
+  public void passwordRecovery(@Valid @RequestParam("email") String email) {
     accountService.passwordRecovery(email);
   }
 

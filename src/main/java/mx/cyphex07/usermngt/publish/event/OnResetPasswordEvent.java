@@ -10,13 +10,9 @@ public class OnResetPasswordEvent extends ApplicationEvent {
   @Getter
   private final User user;
 
-  @Getter
-  private final String url;
-
-  public OnResetPasswordEvent(final User user, String url) {
+  public OnResetPasswordEvent(final User user) {
     super(user);
     this.user = user;
-    this.url = url;
   }
 
 

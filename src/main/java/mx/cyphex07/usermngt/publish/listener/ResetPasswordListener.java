@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import mx.cyphex07.usermngt.model.User;
 import mx.cyphex07.usermngt.notification.NotificationService;
 import mx.cyphex07.usermngt.notification.dto.Notification;
-import mx.cyphex07.usermngt.publish.event.OnRegistrationCompleteEvent;
 import mx.cyphex07.usermngt.publish.event.OnResetPasswordEvent;
 import mx.cyphex07.usermngt.service.UserService;
 
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -23,17 +23,28 @@ public class ResetPasswordListener implements ApplicationListener<OnResetPasswor
   private final UserService userService;
   private final NotificationService notificationService;
 
+  @Value("${userapp.notification.email.recovery.subject}")
+  private String subject;
+
+  @Value("${userapp.notification.email.recovery.message}")
+  private String message;
+
+  @Value("${userapp.notification.email.sender}")
+  private String sender;
+
+  @Value("${userapp.server.url.app}")
+  private String serverUrl;
+
   @Override public void onApplicationEvent(final OnResetPasswordEvent event) {
     log.info("Executing application event: OnResetPasswordEvent");
 
     User user = event.getUser();
 
-    // token
     final String token = UUID.randomUUID().toString();
-    userService.saveSignUpToken(user, token);
-    StringBuilder confirmationURL = new StringBuilder(event.getUrl())
+    userService.savePasswordRecoveryToken(user, token);
+    StringBuilder confirmationURL = new StringBuilder(serverUrl)
         .append("/")
-        .append("api/v1/signUp/confirmation")
+        .append("api/v1/account/tokenValidation")
         .append("?")
         .append("token=")
         .append(token);
